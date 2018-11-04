@@ -102,6 +102,27 @@ case "$1" in
                 echo "Channel Updated";
 		exit 0;
 		;;
+	-r)
+		shift;
+                channel=$1;
+                # echo "$channel";
+
+                sEQUALS="$channel=";
+                sDef="";
+                while read -r line; do
+                        [[ "$line" =~ ^#.*$ ]] && continue
+                        # echo "$line";
+                        if [[ "${line}" == "${sEQUALS}"* ]]; then
+                                sDef=$line;
+                        fi
+                done < "$configLoc";
+		# echo "$sDef";
+		if [[ $sDef != "" ]] ; then
+			sed -i "/${sDef//\//\\/}/d" "${configLoc}";
+			echo "Channel Removed";
+		fi
+		exit 0;
+		;;
 esac;
 
 slackUrl="";
@@ -126,7 +147,7 @@ else
 	
 	if [[ $slackUrl == "" ]]; then
 		# echo "$slackUrl";
-		echo "No channel found in slackchannel.properties file";
+		echo "No channel found in slackchannel.properties file, #${channel}";
         	exit 1;
 	fi
 fi
