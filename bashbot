@@ -1,11 +1,40 @@
 #!/bin/bash
 
-# Usage: bashbot <channel> <message>
+# Usage: bashbot <options> <channel> <message>
 
-# Enter the name of your slack host here - the thing that appears in your URL:
-# https://slackhost.slack.com/
-echo "BashBot the Slack Bash Utility has Started";
 configLoc='./slackchannel.properties';
+
+# Changing directory to current script
+MY_PATH="`dirname \"$0\"`";
+# echo "$MY_PATH";
+cd "$MY_PATH";
+
+# Create slackchannel.properties file is it does not exist
+if [ ! -f "$configLoc" ]; then
+	touch "$configLoc";
+	echo "# Bashbot Channel Config" >> "$configLoc";
+        echo "# " >> "$configLoc";
+        echo "## <channel>=<url>" >> "$configLoc";
+        echo "## Examples:" >> "$configLoc";
+        echo "##    general=https://hooks.slack.com/services/J04THEHB/V4F6B1UD/sta44Nt0PlHjNpgqFuwuYa4" >> "$configLoc";
+	echo "################################" >> "$configLoc";
+fi
+
+echo "BashBot the Slack Bash Utility has Started";
+case "$1" in
+	-h)
+		echo;
+      		echo '  Usage: bashbot <options> <channel> <message>';
+      		echo;
+      		echo '  Options:    **No Options Required**';
+      		echo '    -h    Help';
+      		echo;
+      		echo "  e.g. ${0} general \"BashBot is Watching... Always Watching.\"";
+      		echo;
+      		exit 0;
+	;;
+esac;
+
 slackUrl="";
 sREPLACE="";
 
@@ -14,20 +43,6 @@ if [[ $channel == "" ]]; then
         echo "No channel specified";
         exit 1;
 else
-	MY_PATH="`dirname \"$0\"`";
-	# echo "$MY_PATH";
-	cd "$MY_PATH";
-
-	if [ ! -f "$configLoc" ]
-	then
-		touch "$configLoc";
-		echo "# Bashbot Channel Config" >> "$configLoc";
-                echo "# " >> "$configLoc";
-                echo "## <channel>=<url>" >> "$configLoc";
-                echo "## Examples:" >> "$configLoc";
-                echo "### general=https://hooks.slack.com/services/J04THEHB/V4F6B1UD/sta44Nt0PlHjNpgqFuwuYa4" >> "$configLoc";
-	fi
-	
 	sEQUALS="$channel=";
 	# echo "$sEQUALS";
 	while read -r line; do
