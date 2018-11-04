@@ -44,12 +44,67 @@ case "$1" in
 		done < "$configLoc";
 		exit 0;
 		;;
+	-a)
+		shift;
+		channel=$1;
+		# echo "$channel";
+
+		shift;
+		slackUrl=$*;
+		# echo "$slackUrl";
+		
+		sEQUALS="$channel=";
+		while read -r line; do
+	                [[ "$line" =~ ^#.*$ ]] && continue
+        	        # echo "$line";
+                	if [[ "${line}" == "${sEQUALS}"* ]]; then
+                        	echo "ERROR: Channel Definition already exists. Use '-u' to update the channel url mapping.";
+                        	exit 1;
+                	fi
+        	done < "$configLoc";
+
+		echo "$channel=$slackUrl" >> "$configLoc";
+		echo "Channel Added";
+		exit 0;
+		;;
+	-u)
+		shift;
+                channel=$1;
+                # echo "$channel";
+
+                shift;
+                slackUrl=$*;
+                # echo "$slackUrl";
+
+                sEQUALS="$channel=";
+		sDef="";
+                while read -r line; do
+                        [[ "$line" =~ ^#.*$ ]] && continue
+                        # echo "$line";
+                        if [[ "${line}" == "${sEQUALS}"* ]]; then
+                                sDef=$line;
+                        fi
+                done < "$configLoc";
+
+		if [[ $channel == "" ]]; then
+        		echo "No existing definition found for #${channel}, adding definition";
+			echo "$channel=$slackUrl" >> "$configLoc";
+        		exit 0;
+		fi
+
+		sEQUALS="$channel=$slackUrl";
+		# echo "${sDef}";
+		sed -i -e "s@${sDef}@${sEQUALS}@g" "${configLoc}";
+                echo "Channel Updated";
+		exit 0;
+		;;
 esac;
 
 slackUrl="";
 sREPLACE="";
 
 channel=$1;
+
 if [[ $channel == "" ]]; then
         echo "No channel specified";
         exit 1;
