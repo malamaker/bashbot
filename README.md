@@ -1,7 +1,7 @@
 # bashbot
 BashBot is a Messaging Client for Slack
 
-Usage: bashbot <options> <channel> <message>
+Usage: bashbot [options] [channel] [message]
   
   Options:    **No Options Required**
       -h    Help
