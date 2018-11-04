@@ -28,11 +28,22 @@ case "$1" in
       		echo;
       		echo '  Options:    **No Options Required**';
       		echo '    -h    Help';
+		echo '    -l    List All Channels in slackchannel.properties';
       		echo;
       		echo "  e.g. ${0} general \"BashBot is Watching... Always Watching.\"";
       		echo;
       		exit 0;
-	;;
+		;;
+	-l)
+		echo;
+		echo 'Listing All Channels in slackchannel.properties:';
+		while read -r line; do
+			[[ "$line" =~ ^#.*$ ]] && continue
+			# echo "$line";
+			echo "    - ${line}" | awk -F '=' '{print $1}';
+		done < "$configLoc";
+		exit 0;
+		;;
 esac;
 
 slackUrl="";
