@@ -1,0 +1,63 @@
+#!/bin/bash
+
+# Usage: bashbot <channel> <message>
+
+# Enter the name of your slack host here - the thing that appears in your URL:
+# https://slackhost.slack.com/
+echo "BashBot the Slack Bash Utility has Started";
+configLoc='./slackchannel.properties';
+slackUrl="";
+sREPLACE="";
+
+channel=$1;
+if [[ $channel == "" ]]; then
+        echo "No channel specified";
+        exit 1;
+else
+	MY_PATH="`dirname \"$0\"`";
+	# echo "$MY_PATH";
+	cd "$MY_PATH";
+
+	if [ ! -f "$configLoc" ]
+	then
+		touch "$configLoc";
+		echo "# Bashbot Channel Config" >> "$configLoc";
+                echo "# " >> "$configLoc";
+                echo "## <channel>=<url>" >> "$configLoc";
+                echo "## Examples:" >> "$configLoc";
+                echo "### general=https://hooks.slack.com/services/J04THEHB/V4F6B1UD/sta44Nt0PlHjNpgqFuwuYa4" >> "$configLoc";
+	fi
+	
+	sEQUALS="$channel=";
+	# echo "$sEQUALS";
+	while read -r line; do
+		[[ "$line" =~ ^#.*$ ]] && continue
+		# echo "$line";
+		if [[ "${line}" == "${sEQUALS}"* ]]; then
+			slackUrl="${line/${sEQUALS}/${sREPLACE}}";
+			# echo "$slackUrl";
+		fi
+	done < "$configLoc";
+	
+	if [[ $slackUrl == "" ]]; then
+		# echo "$slackUrl";
+		echo "No channel found in slackchannel.properties file";
+        	exit 1;
+	fi
+fi
+
+shift;
+
+text=$*;
+
+if [[ $text == "" ]]; then
+        echo "No text specified";
+        exit 1;
+fi
+
+escapedText=$(echo $text | sed 's/"/\"/g' | sed "s/'/\'/g" );
+json="{\"text\": \"$escapedText\"}";
+
+curl -s -d "payload=$json" "$slackUrl";
+echo;
+echo "Message Sent to #$channel";
