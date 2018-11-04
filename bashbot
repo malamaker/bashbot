@@ -29,6 +29,10 @@ case "$1" in
       		echo '  Options:    **No Options Required**';
       		echo '    -h    Help';
 		echo '    -l    List All Channels in slackchannel.properties';
+		echo '    -a    Add a new channel to slackchannel.properties. You will need to pass the channel name and url.';
+                echo '            e.g. bashbot -a [new-channel-name] [url]';
+                echo '    -u    Updates an existing channel to slackchannel.properties. You will need to pass the channel name and url. If an existing channel can not be found it will add the channel.';
+                echo '            e.g. bashbot -a [existing-channel-name] [url]';
       		echo;
       		echo "  e.g. ${0} general \"BashBot is Watching... Always Watching.\"";
       		echo;
