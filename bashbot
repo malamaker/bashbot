@@ -5,9 +5,18 @@
 configLoc='./slackchannel.properties';
 
 # Changing directory to current script
-MY_PATH="`dirname \"$0\"`";
-# echo "$MY_PATH";
+MY_FILENAME="`basename \"$0\"`";
+MY_PATH="$( cd "$(dirname "$0")" ; pwd -P )";
+#echo "$MY_PATH";
 cd "$MY_PATH";
+mkdir -p ~/bin;
+
+# Adding script directory to PATH
+fullPathFileName="${MY_PATH}/${MY_FILENAME}";
+#echo "$fullPathFileName";
+if [ ! -f ~/bin/bashbot ]; then
+	ln -s "$fullPathFileName" ~/bin/bashbot;
+fi
 
 # Create slackchannel.properties file is it does not exist
 if [ ! -f "$configLoc" ]; then
